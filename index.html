@@ -1,0 +1,499 @@
+	<!DOCTYPE html>
+
+	<html lang="en">
+	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-140881011-2"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	  gtag('config', 'UA-140881011-2');
+	</script>
+	<title>Syn(es)thetic Reality</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<style>
+		body {
+	  		width: 100%;
+	  		height: 100%;
+	  		background-color: #000;
+	  		color: #fff;
+	  		margin: 0px;
+	  		padding: 0;
+	  		overflow: hidden;
+		}
+
+
+		#ui {
+	  		position: absolute;
+	  		bottom: 2em;
+	  		left: 50%;
+	  		transform: translate(-50%, 0%);
+	  		text-align: center;
+	  		font-family: 'Courier New', sans-serif;
+	  		z-index: 0;
+		}
+
+		#checkBox {
+	  		position: absolute;
+	  		font-size: 1.2em;
+	  		bottom: 3em;
+	  		left: 50%;
+	  		width: 90%;
+	  		transform: translate(-50%, 0%);
+	  		text-align: center;
+	  		font-family: 'Courier New', sans-serif;
+	  		z-index:1;
+		}
+
+		
+		a#fullWindow {
+	  		display: block;
+	  		color: white;
+	  		margin-top: 0.5em;
+	  		visibility: hidden;
+		}
+
+		a#feedback {
+	  		display: block;
+	  		color: white;
+	  		font-size: 1.3em;
+	  		margin-top: 1em;
+	  		
+			font-family: 'Courier New', sans-serif;
+		}
+
+
+		a#start {
+	  		position: absolute;
+	  		bottom: 50%;
+	  		left: 50%;
+	  		transform: translate(-50%, 0%);
+	  		text-align: center;
+	  		font-style: italic;
+	  		letter-spacing: -2px;
+	  		font-family: 'Courier New', sans-serif;
+	  		font-size: 2.5em;
+	  		z-index: 0;
+	  		display: block;
+	  		color: white;
+	  		margin-top: 1em;
+		}
+
+		p#title {
+	  		position: absolute;
+	  		top: 0.8em;
+	  		left: 50%;
+	  		transform: translate(-50%, -50%);
+	  		text-align: center;
+	  		letter-spacing: -1px;
+	  		font-family: 'Courier New', sans-serif;
+	  		font-size: 3em;
+	  		z-index: 0;
+	  		display: block;
+	  		color: #FFFFFF;
+	  		margin-top: 1em;
+		}
+
+	</style>
+	</head>
+
+
+	<body>
+	  	<p id="title">Syn(es)thetic Reality</p>
+
+	  	<a id="start" href="#">Start</a>
+	  	<div id="checkBox">
+	  		Caution: Avoid using this app on low battery<br><br>
+	  		Use handsfree microphone for better results<br><br>
+	  		Enable spectrum below to visualise incoming audio data<br><br>
+	  		<input type="checkbox" name="visualise" id ="visualise">Spectrum<br>
+	  	</div>
+	  	<div id="ui">
+	    	<div id="vr-button"></div>
+	    	<a id="fullWindow" href="#">Try it without a headset</a>
+	  	</div>
+	  	
+	  	<video width="4" height = "3" id="video" autoplay playsinline </video>
+	  	<audio id="audio" ></audio>
+	</body>
+
+	<script>
+
+		WebVRConfig = {
+	  /**
+	   * webvr-polyfill configuration
+	   */
+	  // Forces availability of VR mode.
+	  //FORCE_ENABLE_VR: true, // Default: false.
+	  // Complementary filter coefficient. 0 for accelerometer, 1 for gyro.
+	  //K_FILTER: 0.98, // Default: 0.98.
+	  // How far into the future to predict during fast motion.
+	  //PREDICTION_TIME_S: 0.040, // Default: 0.040 (in seconds).
+	  // Flag to disable touch panner. In case you have your own touch controls
+	  //TOUCH_PANNER_DISABLED: true, // Default: false.
+	  // Enable yaw panning only, disabling roll and pitch. This can be useful for
+	  // panoramas with nothing interesting above or below.
+	  //YAW_ONLY: true, // Default: false.
+	  // Enable the deprecated version of the API (navigator.getVRDevices).
+	  //ENABLE_DEPRECATED_API: true, // Default: false.
+	  // Scales the recommended buffer size reported by WebVR, which can improve
+	  // performance. Making this very small can lower the effective resolution of
+	  // your scene.
+	  		BUFFER_SCALE: 1.0, // default: 1.0
+	  // Allow VRDisplay.submitFrame to change gl bindings, which is more
+	  // efficient if the application code will re-bind it's resources on the
+	  // next frame anyway.
+	  // Dirty bindings include: gl.FRAMEBUFFER_BINDING, gl.CURRENT_PROGRAM,
+	  // gl.ARRAY_BUFFER_BINDING, gl.ELEMENT_ARRAY_BUFFER_BINDING,
+	  // and gl.TEXTURE_BINDING_2D for texture unit 0
+	  // Warning: enabling this might lead to rendering issues.
+	  //DIRTY_SUBMIT_FRAME_BINDINGS: true // default: false
+		};
+	</script>
+
+	<!--
+	  A polyfill for Promises. Needed for IE and Edge.
+	-->
+	<script src="js/es6-promise.min.js"></script>
+
+	<!--
+	  three.js 3d library
+	-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/104/three.min.js"></script>
+
+	<!--
+	  VRControls.js acquires positional information from connected VR devices and applies the transformations to a three.js camera object.
+	-->
+	<script src="js/VRControls.js"></script>
+
+	<!--
+	  VREffect.js handles stereo camera setup and rendering.
+	-->
+	<script src="js/VREffect.js"></script>
+
+	<!--
+	  A polyfill for WebVR using the Device{Motion,Orientation}Event API.
+	-->
+	<script src="js/webvr-polyfill.min.js"></script>
+
+	<script src="js/WebGL.js"></script>
+	<!--
+	  A set of UI controls for entering VR mode.
+	-->
+	<script src="js/webvr-ui.min.js"></script>
+
+	<!--
+		Vertex Shader
+	-->
+	<script id="vertexShader" type="x-shader/x-vertex">
+
+		varying vec2 vUv;
+
+		void main()
+		{
+			vUv = uv;
+			vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+			gl_Position = projectionMatrix * mvPosition;
+		}
+
+	</script>
+
+	<!--
+		Fragment Shader	
+	-->
+
+	<script id="fragment_shader" type="x-shader/x-fragment">
+
+	  	uniform float amp[32];				//array of amplitude for each frequency range
+
+		uniform sampler2D texture;			//2D texture to manipulate
+		varying vec2 vUv;
+
+		//function to convert RGB colorspace to HSV
+		vec3 rgb2hsv(vec3 c){
+	    	vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+	        vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+	        vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+	        float d = q.x - min(q.w, q.y);
+	        float e = 1.0e-10;
+	        return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+	    }
+
+	    //function to convert HSV colorspace to RGB
+	    vec3 hsv2rgb(vec3 c){
+	       	vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+	       	vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+	       	return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+	    } 
+		
+		void main( void ) {
+			//initialize variables
+			vec2 position = vUv;
+			vec3 cRGB = texture2D( texture, vUv ).rgb;
+			
+			vec3 cHsv = rgb2hsv(cRGB);		//convert color to hsv
+
+	    	int hue = int(cHsv.x*32.0);		//remap from 0.0, 1.0 to 0, resolution (should match resolution in main script below)
+	    	for(int i = 0; i < 32; i++){	//for loop used to avoid compilation error at amp[i] where i has no bounds
+	      		if(hue == i){				//match the hue and index
+	        		cHsv.y *= amp[i];		//change percentage of saturation according to amplitude
+	      		}
+	    	}
+	    	
+	    	cRGB = hsv2rgb(cHsv);			//bring back to RGB
+			gl_FragColor = vec4( cRGB, 1.0 );
+		}
+
+	</script>
+
+
+
+	<script>
+
+		//check if WebgGL compatible
+		if ( WEBGL.isWebGLAvailable() === false ) {
+			document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+		}
+
+	// Currently active VRDisplay.
+		var vrDisplay;
+
+	// Various global THREE.Objects.
+		var scene;
+		var controls;
+		var effect;
+		var camera;
+
+	//fft resolution. Needs to be a power of 2 	
+		var fft = 2048;
+
+	// EnterVRButton for rendering enter/exit UI.
+		var vrButton;
+
+	//Various gloabal variables for 
+		var video, audio, analyser, AudioContext, context, input, frequencyData, vidTex, plane;
+
+		var soundLoaded = false;												//used to stop update function from accessing null array until audio is enabled 
+		var bars = [];															//array to store spectrum bars
+
+	  	var amplitude = [];														//array to store amplitude values for each frequency range
+
+	  	var resNum = 32;														//num of ranges of hue and frequencies. This should match with the number in the fragment Shader
+	  	
+	  	for(var i = 0; i < resNum; i++){
+	   		amplitude.push(0.50);												//initialize array with 0.5
+	  	}
+
+
+		document.getElementById('start').addEventListener('click', startMedia);	//wait for user interaction, needed for WebRTC
+
+		function startMedia() {
+
+			//change layout from home to active
+	  		document.getElementById('start').style.visibility = "hidden";
+	  		document.getElementById('title').style.visibility = "hidden";
+	  		document.getElementById('checkBox').style.visibility = "hidden";
+	  		document.getElementById('fullWindow').style.visibility = "visible";
+
+	  		//capture audio and video and assign an specturm analyser to the audioContext
+	  		AudioContext = window.AudioContext || window.webkitAudioContext;    
+	  		context = new AudioContext();
+	  		analyser = context.createAnalyser();
+	  		analyser.smoothingTimeConstant = 0.6;
+	  		analyser.fftSize = fft;
+	  		frequencyData = new Uint8Array(analyser.frequencyBinCount);
+	  
+	 		video = document.getElementById( 'video' );
+	  		video.muted = true;
+	  		audio = document.getElementById('audio');
+
+	  		var constraints = { video: { facingMode: "environment" }, audio: true };
+	  		navigator.mediaDevices
+	    		.getUserMedia(constraints)
+	    		.then(function(stream) {
+	    			video.srcObject = stream;
+	    			input =context.createMediaStreamSource(stream);
+	    			input.connect(analyser);
+	    			soundLoaded = true;
+	    			onLoad();													//start main code after loading
+	  			})
+	  			.catch(function(error) {
+	    			console.error("Oops. Something has gone wrong.", error);
+	  			});
+		}
+
+		function onLoad() {
+
+			//load videoTexture
+	  		vidTex = new THREE.VideoTexture( video );					
+	  		vidTex.minFilter = THREE.NearestFilter;
+	  		vidTex.magFilter = THREE.NearestFilter;
+
+	  		//create scene
+	  		scene = new THREE.Scene();
+
+	  		// Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
+	  		// Only enable it if you actually need to
+	  		var renderer = new THREE.WebGLRenderer({antialias: true});
+	  		renderer.setPixelRatio(window.devicePixelRatio);
+
+	  		// Append the canvas element created by the renderer to document body element.
+			document.body.appendChild(renderer.domElement);
+
+			//load camera and VR controls
+	  		var aspect = window.innerWidth / window.innerHeight;
+	 		camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 10000);
+	  		controls = new THREE.VRControls(camera);
+	  		controls.standing = true;
+	  		camera.position.y = controls.userHeight;
+	  		camera.position.z = 0;
+
+	  		//create bars for spectrum visualiser
+	  		var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+	  		for ( var i = 0; i < fft/4; i ++ ) {									//fft/4 is to limit the range of the spectrum to half ~10000hz
+	    		var c = new THREE.Color();
+	    		c.setHSL((i+1)/(fft/4), 1.0, 0.5);
+	    		var material = new THREE.MeshBasicMaterial( {color: c} );
+	    		var mesh = new THREE.Mesh( geometry, material );
+	    		mesh.position.x = 0.8*(i/(fft/4))-0.4;
+	    		mesh.position.y = controls.userHeight-0.4;
+	    		mesh.position.z = -0.8;
+	    		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.001;
+	    		if(document.getElementById("visualise").checked)					//check if the checkBox was ticked
+	    			scene.add( mesh );												//add mesh only if it was ticked
+	    		bars.push( mesh );
+	  		}
+
+
+	  		//uniform values for fragment shader
+	  		uniform = {
+	  			
+				"texture": { value: vidTex },               								//load camera feed into the fragment shader
+	      		//"texture": { value: new THREE.TextureLoader().load( 'HSLS255.jpg' ) },	//alternatively, load image into the fragmenet shader
+	      		"amp": {value: amplitude}
+	  		};
+
+	  		uniform[ "texture" ].value.wrapS = uniform[ "texture" ].value.wrapT = THREE.RepeatWrapping;
+
+	  		//generate material based on shader
+	  		var materials = new THREE.ShaderMaterial( {	
+				uniforms: uniform,
+				vertexShader: document.getElementById( 'vertexShader' ).textContent,
+				fragmentShader: document.getElementById( 'fragment_shader' ).textContent
+	  		} );
+
+	  		//create a xy plane with shader material
+	  		var geometry = new THREE.PlaneGeometry( 1, 1);
+	  		plane = new THREE.Mesh( geometry, materials );
+	 		plane.position.x = 0;
+	  		plane.position.y = controls.userHeight;
+	  		plane.position.z = -0.9;
+	  		scene.add(plane);
+
+	  		//Apply VR stereo rendering to renderer.
+	  		effect = new THREE.VREffect(renderer);
+	  		effect.setSize(window.innerWidth, window.innerHeight);
+
+	  		window.addEventListener('resize', onResize, true);
+	 		window.addEventListener('vrdisplaypresentchange', onResize, true);
+
+	  		// Initialize the WebVR UI.
+	  		var uiOptions = {
+	    		color: 'black',
+	    		background: 'white',
+	    		corners: 'square'
+	  		};
+	  		vrButton = new webvrui.EnterVRButton(renderer.domElement, uiOptions);
+	  		vrButton.on('exit', function() {
+	    		camera.quaternion.set(0, 0, 0, 1);
+	    		camera.position.set(0, controls.userHeight, 0);
+	  		});
+	  		vrButton.on('hide', function() {
+	  		  document.getElementById('ui').style.display = 'none';
+	  		});
+	 		vrButton.on('show', function() {
+	    		document.getElementById('ui').style.display = 'inherit';
+	  		});
+	  		document.getElementById('vr-button').appendChild(vrButton.domElement);
+	  		document.getElementById('fullWindow').addEventListener('click', function() {
+	    		vrButton.requestEnterFullscreen();
+	    		camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 10000);
+	  			controls = new THREE.VRControls(camera);
+	  			controls.standing = true;
+	  			camera.position.y = controls.userHeight;
+	  			camera.position.z = 0;
+	  		});
+	  		setupStage();
+		}
+
+	  function divideArray(){
+
+	    analyser.getByteFrequencyData(frequencyData);										//fetch analyser data into frequncyData array
+	    var count = 0;
+
+	    for( var i = 0; i < frequencyData.length/2; i += resNum/2, count++){
+	      if(count > resNum){																//safety just in case of errors while changing resolution 
+	        break;
+	      }
+	      var t = 0;
+
+	      for(var j = 0; j < resNum/2; j++){
+	      	var am = 1.9*frequencyData[i+j]/255 
+	      	am *= am;																		//square value to exaggerate the peaks
+	      	t += am;
+	      }
+	      t *= 1/(resNum/2);																//get average value
+
+	      var graph = count/32;
+	      graph = -0.8 * graph * graph * graph + 0.8 * graph * graph + 0.6 * graph + 0.4;
+	      amplitude[count] = t * graph;
+	    }
+	  }
+
+	// Request animation frame loop function
+		function animate(timestamp) {
+			//visualise spectrum
+	  		if(soundLoaded){																//run only if audio is loaded
+	      		analyser.getByteFrequencyData(frequencyData);								//fetch analyser data into frequncyData array
+	      		for( var i = 0; i < frequencyData.length/2; i++){
+	        		var bar = bars[i];
+	        		var t = 0.8*frequencyData[i]/255;
+	        		bar.scale.set(0.001, t*t*t, 0.001);
+	        		bar.material.color.setHSL((i+1)/(fft/4), frequencyData[i]/255, 0.5);
+	      		}
+
+	      		//divide frequency data array into new array with predefined resolution
+	        	divideArray();
+	        	//send updated array to fragment shader
+	          	plane.material.uniforms.amp.value = amplitude;
+	  		}
+
+	  		// Render the scene.
+	  		effect.render(scene, camera);
+	  		vrDisplay.requestAnimationFrame(animate);
+		}
+
+		function onResize(e) {
+	  		effect.setSize(window.innerWidth, window.innerHeight);
+	  		camera.aspect = window.innerWidth / window.innerHeight;
+	  		camera.updateProjectionMatrix();
+		}
+
+	// Get the HMD
+		function setupStage() {
+	  		navigator.getVRDisplays().then(function(displays) {
+	    		if (displays.length > 0) {
+	      			vrDisplay = displays[0];
+	      			vrDisplay.requestAnimationFrame(animate);
+	    		}
+	  		});
+		}
+
+	</script>
+
+	</html>
